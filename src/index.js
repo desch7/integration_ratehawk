@@ -90,7 +90,7 @@ const fecthAllBooking = async () => {
                     let directoryFile = path.join(__dirname, 'logs', 'unimported_rows_' + year + '_' + month + '_' + day + '_' + hour + '_' + minute + '_' + second + '_' + millisecond + '.txt');
                     fs.appendFile(directoryFile, contentLog, err => {
                         if (err) {
-                            console.error('written file error=> ' + err);
+                            console.error('error during creating file=> ' + err);
                         } else {
                             console.error('file written successfully');
                         }
