@@ -138,6 +138,3 @@ List of rows unimported
 	],
 }
 
-table en bd pour les credentials : custom_settings
-activities pour le log dans notre bd
-un log pour les echecs d'appel de ratehawk

@@ -14,7 +14,7 @@ client.connect()
         console.log('DB Connected');
     })
     .catch((err) => {
-        console.log(err);
+        //console.log('BD connect err =>' + err);
     })
 
 module.exports = client;
