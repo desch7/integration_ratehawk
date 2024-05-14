@@ -9,7 +9,8 @@ const buildJsonForImportation = (datas) => {
         let nbrchildren = item.rooms_data.reduce((acc, curr) => acc + curr.guest_data.children_number, 0)
         let mkp = Number(((parseFloat(item.amount_sell_b2b2c.amount) - parseFloat(item.amount_payable.amount))).toFixed(2))
         let orderBooking = {
-            line: Number(item.supplier_data.confirmation_id),
+            //line: Number(item.supplier_data.confirmation_id),
+            line: Number(item.partner_data.order_id),
             traveler_name: item.rooms_data[0].guest_data.guests[0].first_name + ' ' + item.rooms_data[0].guest_data.guests[0].last_name,
             channel: "non_gds",
             transaction_type: transType,
@@ -17,7 +18,7 @@ const buildJsonForImportation = (datas) => {
             adjusted_transaction: "",
             issuing_date: item.created_at,
             product_type: "hotel",
-            pnr: String(item.order_id),
+            pnr: String(item.partner_data.order_id),
             published_fare: pubFare,
             penality: 0,
             commission_rate: 0,
