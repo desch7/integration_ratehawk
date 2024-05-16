@@ -4,7 +4,7 @@ const axios = require('axios');
 
 // Recuperation par page des reservations d'hotel via l'api de Ratehawk
 const fetchBookingPerPage = async (postParam, apiParam) => {
-    console.log('postParam => ' + JSON.stringify(postParam) + ' ==== apiParam => ' + JSON.stringify(apiParam));
+    //console.log('postParam => ' + JSON.stringify(postParam) + ' ==== apiParam => ' + JSON.stringify(apiParam));
     let response = { data: null, error: null }
     try {
         let res = await axios.post(String(apiParam.base_endpoint) + 'hotel/order/info/', JSON.stringify(postParam), {

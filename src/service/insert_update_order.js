@@ -78,7 +78,6 @@ const importationOrders = (apiParam, webEvent, partnerOrderIds) => {
                 }).catch(err => {
                     console.log(webEvent + ' saveLog error => ' + err);
                 });
-            return res.error
         }
     }).catch(err => {
         console.log('{ error: err.error } ' + err);
