@@ -43,7 +43,7 @@ const importationOrders = (apiParam, webEvent, partnerOrderIds) => {
                     // handle result of insertion or update
                     insertionReport = dbErrors(String(result.rows[0].ab_ratehawk_import_item), 'line')
                     connection.end;
-                    console.log(webEvent + ' insertionReport in query execurion=> ' + JSON.stringify(insertionReport) + '\n');
+                    //console.log(webEvent + ' insertionReport in query execution=> ' + JSON.stringify(insertionReport) + '\n');
                     // build list of unimported line
                     let lineUnimported = []
                     insertionReport.errorList.map((item) => {

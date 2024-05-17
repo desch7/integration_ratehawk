@@ -35,29 +35,29 @@ const server = http.createServer((req, res) => {
                     // Check if there are data in webhook payload
                     if (body.signature.timestamp && body.signature.token && body.signature.signature && body.type && body.agreement_number && body.partner_order_id) {
                         // Check if the webhook notification is authenticated
-                        if (verifyRequestOrigin(
-                            {
-                                apiKey: apiParam.api_username,
-                                timestamp: body.signature.timestamp,
-                                token: body.signature.token,
-                                signature: body.signature.signature
-                            })) {
-                            statusCod = 200
-                            responseBody.status = 'ok'
-                            if (body.type === 'cancelled') {
-                                // handle deletion of order
-                                cancelledOrder(JSON.stringify([{ pnr: body.partner_order_id }]))
-                            }
-                            if (body.type === 'created' || body.type === 'updated') {
-                                // handle creation or modification of order
-                                let partnerOrderIds = []
-                                partnerOrderIds.push(body.partner_order_id)
-                                importationOrders(apiParam, body.type, partnerOrderIds)
-                            }
-                        } else {
-                            statusCod = 401
-                            responseBody.error = 'Unidentified source'
+                        // if (verifyRequestOrigin(
+                        //     {
+                        //         apiKey: apiParam.api_username,
+                        //         timestamp: body.signature.timestamp,
+                        //         token: body.signature.token,
+                        //         signature: body.signature.signature
+                        //     })) {
+                        statusCod = 200
+                        responseBody.status = 'ok'
+                        if (body.type === 'cancelled') {
+                            // handle deletion of order
+                            cancelledOrder([{ pnr: body.partner_order_id }])
                         }
+                        if (body.type === 'created' || body.type === 'updated') {
+                            // handle creation or modification of order
+                            let partnerOrderIds = []
+                            partnerOrderIds.push(body.partner_order_id)
+                            importationOrders(apiParam, body.type, partnerOrderIds)
+                        }
+                        // } else {
+                        //     statusCod = 401
+                        //     responseBody.error = 'Unidentified source'
+                        // }
 
                     } else {
                         statusCod = 500
