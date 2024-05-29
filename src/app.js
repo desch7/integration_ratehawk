@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config({ path: '../env/.env' });
 const http = require('http');
 const verifyRequestOrigin = require('./util/verifiy_request_origin');
 const getParametersApi = require('./database_traitement/api_call_parameters');
@@ -148,7 +148,7 @@ const server = http.createServer((req, res) => {
 });
 
 // Set the server to listen on a port
-const PORT = process.env.PORT || 3007;
+const PORT = process.env.PORT;
 server.listen(PORT, () => {
     //console.log(`Server listening on port ${PORT}`);
 });
