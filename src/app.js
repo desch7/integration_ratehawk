@@ -65,6 +65,7 @@ const server = http.createServer((req, res) => {
                                             res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                             res.write(JSON.stringify(responseBody));
                                             res.end();
+                                            return
                                         } else {
                                             statusCod = 200
                                             responseBody.status = 'ok'
@@ -81,6 +82,7 @@ const server = http.createServer((req, res) => {
                                             res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                             res.write(JSON.stringify(responseBody));
                                             res.end();
+                                            return
                                         }
                                     }).catch((errorTokVerif) => { console.log('errorToken=' + JSON.stringify(errorTokVerif)) })
 
@@ -89,9 +91,10 @@ const server = http.createServer((req, res) => {
                                 statusCod = 401
                                 responseBody.error = 'Webhook unidentified source'
                                 dbLogError = 'Webhook unidentified source'
-                                res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                                res.write(JSON.stringify(responseBody));
-                                res.end();
+                                // res.writeHead(statusCod, { 'Content-Type': 'application/json' })
+                                // res.write(JSON.stringify(responseBody));
+                                // res.end();
+                                // return
                             }
 
                         } else {
@@ -99,9 +102,10 @@ const server = http.createServer((req, res) => {
                             statusCod = 500
                             responseBody.error = 'Some informations in payload of webhook are unavailable'
                             dbLogError = 'Some informations in payload of webhook are unavailable'
-                            res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                            res.write(JSON.stringify(responseBody));
-                            res.end();
+                            // res.writeHead(statusCod, { 'Content-Type': 'application/json' })
+                            // res.write(JSON.stringify(responseBody));
+                            // res.end();
+                            // return
                         }
                         if (dbLogError) {
                             // sauvegarde de l'erreur en bd dans la table api_log
@@ -112,6 +116,7 @@ const server = http.createServer((req, res) => {
                                     res.write(JSON.stringify(responseBody));
                                     res.end();
                                     console.log('Webhook Log successfully save =>' + resLog);
+                                    return
                                 }).catch(errLog2 => {
                                     console.log('Webhook saveLog error => ' + errLog2);
                                 });
@@ -125,6 +130,7 @@ const server = http.createServer((req, res) => {
                         res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                         res.write(JSON.stringify(responseBody));
                         res.end();
+                        return
                     })
             }).catch(errPartner => {
                 console.log('connection to admin db failed: ' + JSON.stringify(errPartner));
@@ -133,6 +139,7 @@ const server = http.createServer((req, res) => {
                 res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                 res.write(JSON.stringify(responseBody));
                 res.end();
+                return
             })
 
 
@@ -144,6 +151,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(statusCod, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(responseBody));
         res.end();
+        return
     }
 });
 
