@@ -2,7 +2,7 @@
   "name": "import_data",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon -r dotenv/config src/app.js dotenv_config_path=env/.env"
