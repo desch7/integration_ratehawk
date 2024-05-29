@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
     let statusCod = null
     let responseBody = { status: null, error: null };
     let dbLogError = '';
-    if (req.method === 'POST' && req.url === '/ab/hotel/ratehawk') {
+    if (req.method === 'POST' && req.url === 'integration-ratehawk.onrender.com') {
         let reqBody = '';
 
         // Handle potential error
