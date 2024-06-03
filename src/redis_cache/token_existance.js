@@ -15,7 +15,7 @@ const tokenExistance = async (newToken) => {
                 }
             }
         },
-        //url: redis[s]://[[username][:password]@][host][:port][/db-number] exemple: 'redis://alice:foobared@awesome.redis.server:6380'
+        //url: redis[s]://[[username][:password]@][host][:port][/db-number] exemple: 'redis://alice:foobared@awesome.redis.server:6380' || env variable REDIS_URI
     })
 
 
