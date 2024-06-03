@@ -2,7 +2,7 @@ const buildJsonForImport = require('../util/json_builder')
 const { Client } = require('pg')
 const dbErrors = require('../util/extract_errors_infos_db')
 const rowsUnimported = require('../util/extract_rows_unimported')
-const fetchBookingPerPage = require('../fecth_data/fetch_reservation')
+const fetchBookingPerPage = require('../api_data/fetch_reservation')
 const saveLog = require('../database_traitement/save_log_db')
 
 
