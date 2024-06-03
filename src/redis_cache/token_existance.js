@@ -17,7 +17,7 @@ const tokenExistance = async (newToken) => {
                 }
             }
         },
-        url: process.env.REDIS_URI
+        url: String(process.env.REDIS_URI)
     })
 
 
