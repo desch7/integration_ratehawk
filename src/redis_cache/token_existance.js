@@ -5,6 +5,8 @@ const tokenExistance = async (newToken) => {
     let cachedToken = ''
     let result = ''
     const redisClient = redis.createClient({
+        // The client uses reconnectStrategy to decide when to attempt to reconnect.
+        //The default strategy is to calculate the delay before each attempt
         socket: {
             reconnectStrategy: function (retries = 10) {
                 if (retries > 20) {
@@ -15,7 +17,7 @@ const tokenExistance = async (newToken) => {
                 }
             }
         },
-        //url: redis[s]://[[username][:password]@][host][:port][/db-number] exemple: 'redis://alice:foobared@awesome.redis.server:6380' || env variable REDIS_URI
+        url: process.env.REDIS_URI
     })
 
 
