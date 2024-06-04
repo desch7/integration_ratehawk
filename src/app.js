@@ -48,7 +48,7 @@ const server = http.createServer((req, res) => {
                                 // Check if the webhook notification is authenticated
                                 if (verifyRequestOrigin(
                                     {
-                                        apiKey: apiParam.api_username,
+                                        apiKey: apiParam.api_password,
                                         timestamp: body.signature.timestamp,
                                         token: body.signature.token,
                                         signature: body.signature.signature
