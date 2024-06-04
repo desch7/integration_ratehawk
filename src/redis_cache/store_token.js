@@ -15,7 +15,7 @@ const storeToken = async (newToken) => {
         .then(async (res) => {
             let insertResult = await insertToken(String(Date.now()), newToken, process.env.REDIS_TOKEN_DAYS_EXPIRATION)
             console.log("🚀 ~ .then ~ insertResult:", insertResult)
-            redisClient.quit();
+            await redisClient.quit();
             result = insertResult
         })
         .catch((err) => { console.error('Redis error: ', err); })

@@ -8,7 +8,7 @@ const getDbParamsPartner = async (agreementNumber) => {
         .then(async (res) => {
             let partnerInfos = await redisClient.get(agreementNumber)
             // console.log('redisClient.get(B2B - 215274) = ', partnerInfos);
-            redisClient.quit();
+            await redisClient.quit();
             result = partnerInfos
         })
         .catch((err) => { console.error('Redis error: ', err); })

@@ -20,10 +20,10 @@ const tokenExistance = async (newToken) => {
         .then(async (res) => {
             let tokenExist = await scanAllTokens()
             if (tokenExist !== 'ok') {
-                redisClient.quit();
+                await redisClient.quit();
                 result = 'ok'
             } else {
-                redisClient.quit();
+                await redisClient.quit();
                 result = 'ko'
             }
         })

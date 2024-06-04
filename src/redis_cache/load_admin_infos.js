@@ -8,8 +8,8 @@ const loadAdminInfos = async (adminInfosList) => {
             await adminInfosList.map(async (item) => {
                 await redisClient.set(item.agreementNumber, JSON.stringify(item))
             })
+            await redisClient.quit();
             result = 'ok'
-            redisClient.quit();
         })
         .catch((err) => { console.error('Redis error: ', err); })
 

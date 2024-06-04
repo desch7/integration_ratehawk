@@ -57,6 +57,7 @@ const server = http.createServer((req, res) => {
                             // Collect api informations
                             getParametersApi(resPartner)
                                 .then(async (apiParamRes) => {
+                                    console.log('test ', resPartner);
                                     apiParam = apiParamRes
                                     // console.log('Received webhook:', body.signature.timestamp, '-', body.signature.token, '-', body.signature.signature, '-', body.type, '-', body.agreement_number, '-', body.partner_order_id);
                                     statusCod = 200
@@ -75,7 +76,6 @@ const server = http.createServer((req, res) => {
                                     res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                     res.write(JSON.stringify(responseBody));
                                     res.end();
-                                    return
                                 })
                                 .catch((errorAPI) => {
                                     console.log('getParametersApi error => ' + JSON.stringify(errorAPI));
@@ -84,8 +84,8 @@ const server = http.createServer((req, res) => {
                                     res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                     res.write(JSON.stringify(responseBody));
                                     res.end();
-                                    return
                                 })
+                            return
                         } else {
                             //Webservice response
                             statusCod = 401
