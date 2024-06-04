@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '../env/.env' });
-const token_existance = require('./redis_cache/token_existance')
+const storeToken = require('./redis_cache/store_token')
 const http = require('http');
 
 const server = http.createServer((req, res) => {
@@ -17,7 +17,7 @@ const server = http.createServer((req, res) => {
 
         // Handle incoming webhook data
         req.on('end', async () => {
-            let result = await token_existance('B2B-25652845')
+            let result = await storeToken('B2B52845')
             console.log("🚀 ~ req.on ~ result:", result)
             res.writeHead(200, { 'Content-Type': 'application/json' })
             res.write(JSON.stringify({ data: 'ok' }));
