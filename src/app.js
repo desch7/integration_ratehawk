@@ -57,7 +57,6 @@ const server = http.createServer((req, res) => {
                             // Collect api informations
                             getParametersApi(resPartner)
                                 .then(async (apiParamRes) => {
-                                    console.log('test ', resPartner);
                                     apiParam = apiParamRes
                                     // console.log('Received webhook:', body.signature.timestamp, '-', body.signature.token, '-', body.signature.signature, '-', body.type, '-', body.agreement_number, '-', body.partner_order_id);
                                     statusCod = 200
@@ -78,7 +77,7 @@ const server = http.createServer((req, res) => {
                                     res.end();
                                 })
                                 .catch((errorAPI) => {
-                                    console.log('getParametersApi error => ' + JSON.stringify(errorAPI));
+                                    //console.log('getParametersApi error => ' + JSON.stringify(errorAPI));
                                     statusCod = 500
                                     responseBody.error = 'Retry later'
                                     res.writeHead(statusCod, { 'Content-Type': 'application/json' })

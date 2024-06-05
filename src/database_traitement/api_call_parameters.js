@@ -20,7 +20,7 @@ const getParametersApi = (dbParamConn) => {
             client.query('select api_name, value from custom_setting where api_name LIKE \'CS_ratehawk%\'', (error, result) => {
                 if (error) {
                     // Reject the Promise if there's an error
-                    console.log('DataBase ' + error);
+                    //console.log('DataBase ' + error);
                     params.db_connectionErr = 'DataBase ' + error
                     client.end;
                     reject(params);

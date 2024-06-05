@@ -62,17 +62,17 @@ const importationOrders = (apiParam, webEvent, partnerOrderIds, dbParamConn) => 
                             // sauvegarde de l'erreur en bd dans la table api_log
                             saveLog('KO_AB', webEvent + ' select ab_ratehawk_import_item(json, travel_item)', { error: JSON.parse(JSON.stringify(insertionReport)).errorList, dataUnimported: JSON.parse(JSON.stringify(reservationsUnimported)).rows }, dbParamConn)
                                 .then((res) => {
-                                    console.log(webEvent + ' Log successfully save =>' + res);
+                                    //console.log(webEvent + ' Log successfully save =>' + res);
                                 }).catch(err => {
-                                    console.log(webEvent + ' saveLog error => ' + err);
+                                    //console.log(webEvent + ' saveLog error => ' + err);
                                 });
                         } else {
                             // sauvegarde du log de reussite en bd dans la table api_log
                             saveLog('OK_ALL', webEvent + ' select ab_ratehawk_import_item(json, travel_item)', null, dbParamConn)
                                 .then((res) => {
-                                    console.log(webEvent + ' Log successfully save =>' + res);
+                                    //console.log(webEvent + ' Log successfully save =>' + res);
                                 }).catch(err => {
-                                    console.log(webEvent + ' saveLog error => ' + err);
+                                    //console.log(webEvent + ' saveLog error => ' + err);
                                 });
                         }
                     })
@@ -81,13 +81,13 @@ const importationOrders = (apiParam, webEvent, partnerOrderIds, dbParamConn) => 
                 // sauvegarde de l'erreur en bd dans la table api_log
                 saveLog('KO_API', 'https://api.worldota.net/api/b2b/v3/hotel/order/info/', { error: res.error }, dbParamConn)
                     .then((res) => {
-                        console.log(webEvent + ' Log successfully save =>' + res);
+                        //console.log(webEvent + ' Log successfully save =>' + res);
                     }).catch(err => {
-                        console.log(webEvent + ' saveLog error => ' + err);
+                        //console.log(webEvent + ' saveLog error => ' + err);
                     });
             }
         }).catch(err => {
-            console.log('{ error: err.error } ' + err);
+            //console.log('{ error: err.error } ' + err);
         });
     }).catch(err => { })
 

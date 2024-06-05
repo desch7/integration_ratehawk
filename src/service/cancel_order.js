@@ -27,17 +27,17 @@ const cancelledOrder = async (orderToCancel, dbParamConn) => {
                             // sauvegarde de l'erreur en bd dans la table api_log
                             saveLog('KO_AB', `select ab_void('${result1.rows[0].id}', 'hotel_booking', 2)`, { error: String(result.rows[0].ab_void) }, dbParamConn)
                                 .then((res) => {
-                                    console.log('KO_AB Cancellation Log successfully save =>' + res);
+                                    //console.log('KO_AB Cancellation Log successfully save =>' + res);
                                 }).catch(err => {
-                                    console.log('KO_AB Cancellation log error => ' + err);
+                                    //console.log('KO_AB Cancellation log error => ' + err);
                                 });
                         } else {
                             // sauvegarde du log de reussite en bd dans la table api_log
                             saveLog('OK_ALL', `select ab_void('${result1.rows[0].id}', 'hotel_booking', 2)`, null, dbParamConn)
                                 .then((res) => {
-                                    console.log('OK_ALL Cancellation Log successfully save =>' + res);
+                                    //console.log('OK_ALL Cancellation Log successfully save =>' + res);
                                 }).catch(err => {
-                                    console.log('OK_ALL Cancellation log error => ' + err);
+                                    //console.log('OK_ALL Cancellation log error => ' + err);
                                 });
                         }
                     })
@@ -45,13 +45,13 @@ const cancelledOrder = async (orderToCancel, dbParamConn) => {
                     // sauvegarde de l'erreur en bd dans la table api_log
                     saveLog('KO_AB', `select id from hotel_booking where pnr = '${orderToCancel[0].pnr}'`, { error: `hotel booking with pnr ${orderToCancel[0].pnr} does not exist` }, dbParamConn)
                         .then((res) => {
-                            console.log('KO_AB Cancellation Log successfully save =>' + res);
+                            //console.log('KO_AB Cancellation Log successfully save =>' + res);
                         }).catch(err => {
-                            console.log('KO_AB Cancellation log error => ' + err);
+                            //console.log('KO_AB Cancellation log error => ' + err);
                         });
                 }
             } else {
-                console.log(`select id from hotel_booking where pnr = '${orderToCancel[0].pnr}' : error in this query`);
+                //console.log(`select id from hotel_booking where pnr = '${orderToCancel[0].pnr}' : error in this query`);
             }
 
         })

@@ -12,7 +12,7 @@ const getDbParamsPartner = () => {
         connection.query(`select customer_id, bd_password, bd_username, ratehawk_ratehawk_apikey, ratehawk_agreement_number from agency where ratehawk_agreement_number IS NOT NULL`, (error, result) => {
             if (error) {
                 // Reject the Promise if there's an error
-                console.log('DataBase ' + error);
+                //console.log('DataBase ' + error);
                 paramsFailed.db_connectionErr = 'DataBase ' + error
                 connection.end;
                 reject(paramsFailed);

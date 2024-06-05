@@ -16,11 +16,11 @@ const fetchBookingPerPage = async (postParam, apiParam) => {
                 password: String(apiParam.api_password)
             }
         })
-        console.log('response: => ' + res.data.status + '\n');
+        //console.log('response: => ' + res.data.status + '\n');
         response.data = res.data
         return response
     } catch (error) {
-        console.log('error during api call => ' + error);
+        //console.log('error during api call => ' + error);
         response.error = 'this is the' + error
         return response
     }
