@@ -3,7 +3,8 @@ const saveLog = require('../database_traitement/save_log_db')
 
 
 
-const cancelledOrder = (orderToCancel, dbParamConn) => {
+const cancelledOrder = async (orderToCancel, dbParamConn) => {
+
     const client = new Client({
         host: dbParamConn.host,
         user: dbParamConn.username,
@@ -55,6 +56,7 @@ const cancelledOrder = (orderToCancel, dbParamConn) => {
 
         })
     }).catch(err => { })
+    return resultCancelled
 }
 
 module.exports = cancelledOrder;

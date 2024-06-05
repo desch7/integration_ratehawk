@@ -1,32 +1,9 @@
-const redis = require("redis");
+const redisClient = require('../config/redis_connection')
 
-// verify : if token already exist in redis cache else it will be insert in redis cache and will be delete after 30 days
+// verify : if token already exist in redis cache 
 const tokenExistance = async (newToken) => {
     let cachedToken = ''
     let result = ''
-    const redisClient = redis.createClient({
-        // The client uses reconnectStrategy to decide when to attempt to reconnect.
-        //The default strategy is to calculate the delay before each attempt
-        socket: {
-            reconnectStrategy: function (retries = 10) {
-                if (retries > 20) {
-                    console.log("Too many attempts to reconnect. Redis connection was terminated");
-                    return new Error("Too many retries.");
-                } else {
-                    return retries * 500;
-                }
-            }
-        },
-        url: String(process.env.REDIS_URI)
-    })
-
-
-    // insertion of token and setting of expiration time
-    const insertToken = async (key, token, days) => {
-        const expirationTimeInSeconds = days * 24 * 60 * 60;
-
-        await redisClient.set(key, token, { EX: expirationTimeInSeconds })
-    };
 
     // scan if the token already exist
     const scanAllTokens = async () => {
@@ -43,11 +20,10 @@ const tokenExistance = async (newToken) => {
         .then(async (res) => {
             let tokenExist = await scanAllTokens()
             if (tokenExist !== 'ok') {
-                await insertToken(String(Date.now()), newToken, process.env.REDIS_TOKEN_DAYS_EXPIRATION)
-                redisClient.quit();
+                await redisClient.quit();
                 result = 'ok'
             } else {
-                redisClient.quit();
+                await redisClient.quit();
                 result = 'ko'
             }
         })

@@ -4,10 +4,13 @@ const verifyRequestOrigin = require('./util/verifiy_request_origin');
 const getParametersApi = require('./database_traitement/api_call_parameters');
 const cancelledOrder = require('./service/cancel_order');
 const importationOrders = require('./service/insert_update_order')
-const saveLog = require('./database_traitement/save_log_db')
+//const saveLog = require('./database_traitement/save_log_db')
 const getDbParamsPartner = require('./database_traitement/admin/db_partner_params')
 const tokenExistance = require('./redis_cache/token_existance')
 const getDifferenceBetweenTimestamp = require('./util/diff_between_timestamp')
+const loadAdminInfos = require('./redis_cache/load_admin_infos')
+const getPartnerInfos = require('./redis_cache/get_partner_infos')
+const storeToken = require('./redis_cache/store_token')
 
 
 
@@ -16,7 +19,7 @@ const server = http.createServer((req, res) => {
     let statusCod = null
     let responseBody = { status: null, error: null };
     let dbLogError = '';
-    if (req.method === 'POST' && req.url === '/ab/hotel/ratehawk') {
+    if (req.method === 'POST' && req.url === '/api/ratehawk') {
         let reqBody = '';
 
         // Handle potential error
@@ -33,26 +36,30 @@ const server = http.createServer((req, res) => {
         req.on('end', async () => {
             let body = JSON.parse(reqBody)
             let apiParam = {}
-            let diffMinutes = getDifferenceBetweenTimestamp(body.signature.timestamp, Date.now(), 'minutes');
-            let noExistToken = await tokenExistance(body.signature.token)
-            // check if token already exist
-            if (noExistToken === 'ok' && diffMinutes <= process.env.DELAYS_MINUTES_WEBHOOK) {
-                getDbParamsPartner(body.agreement_number).then(resPartner => {
-                    // Collect api informations
-                    getParametersApi(resPartner)
-                        .then((apiParamRes) => {
-                            apiParam = apiParamRes
-                            // console.log('Received webhook:', body.signature.timestamp, '-', body.signature.token, '-', body.signature.signature, '-', body.type, '-', body.agreement_number, '-', body.partner_order_id);
-                            //Check if there are data in webhook payload
-                            if (body.signature.timestamp && body.signature.token && body.signature.signature && body.type && body.agreement_number && body.partner_order_id) {
-                                // Check if the webhook notification is authenticated
-                                if (verifyRequestOrigin(
-                                    {
-                                        apiKey: apiParam.api_password,
-                                        timestamp: body.signature.timestamp,
-                                        token: body.signature.token,
-                                        signature: body.signature.signature
-                                    })) {
+            //Check if there are data in webhook payload
+            if (body.signature.timestamp && body.signature.token && body.signature.signature && body.type && body.agreement_number && body.partner_order_id) {
+                let diffMinutes = getDifferenceBetweenTimestamp(body.signature.timestamp, Date.now(), 'minutes');
+                let noExistToken = await tokenExistance(body.signature.token)
+                // check if token already exist
+                if (noExistToken === 'ok' && diffMinutes <= process.env.DELAYS_MINUTES_WEBHOOK) {
+                    let partnerInfos = await getPartnerInfos(body.agreement_number)
+                    //console.log("🚀 ~ req.on ~ partnerInfos:", partnerInfos)
+                    let resPartner = JSON.parse(partnerInfos)
+                    if (resPartner !== undefined) {
+                        // Check if the webhook notification is authenticated
+                        if (verifyRequestOrigin(
+                            {
+                                apiKey: resPartner.apikey,
+                                timestamp: body.signature.timestamp,
+                                token: body.signature.token,
+                                signature: body.signature.signature
+                            })) {
+                            // Collect api informations
+                            getParametersApi(resPartner)
+                                .then(async (apiParamRes) => {
+                                    console.log('test ', resPartner);
+                                    apiParam = apiParamRes
+                                    // console.log('Received webhook:', body.signature.timestamp, '-', body.signature.token, '-', body.signature.signature, '-', body.type, '-', body.agreement_number, '-', body.partner_order_id);
                                     statusCod = 200
                                     responseBody.status = 'ok'
                                     if (body.type === 'cancelled') {
@@ -65,70 +72,46 @@ const server = http.createServer((req, res) => {
                                         partnerOrderIds.push(body.partner_order_id)
                                         importationOrders(apiParam, body.type, partnerOrderIds, resPartner)
                                     }
+                                    await storeToken(body.signature.token)
                                     res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                     res.write(JSON.stringify(responseBody));
                                     res.end();
-                                    return
-                                } else {
-                                    //Webservice response
-                                    statusCod = 401
-                                    responseBody.error = 'Webhook unidentified source'
-                                    dbLogError = 'Webhook unidentified source'
+                                })
+                                .catch((errorAPI) => {
+                                    console.log('getParametersApi error => ' + JSON.stringify(errorAPI));
+                                    statusCod = 500
+                                    responseBody.error = 'Retry later'
                                     res.writeHead(statusCod, { 'Content-Type': 'application/json' })
                                     res.write(JSON.stringify(responseBody));
                                     res.end();
-                                    return
-                                }
-
-                            } else {
-                                // Webservice response
-                                statusCod = 500
-                                responseBody.error = 'Some informations in payload of webhook are unavailable'
-                                dbLogError = 'Some informations in payload of webhook are unavailable'
-                                // sauvegarde de l'erreur en bd dans la table api_log
-                                saveLog('KO_API', 'Webhook request', { error: dbLogError }, resPartner)
-                                    .then((resLog) => {
-                                        // Webservice response
-                                        res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                                        res.write(JSON.stringify(responseBody));
-                                        res.end();
-                                        console.log('Webhook Log successfully save =>' + resLog);
-                                        return
-                                    }).catch(errLog2 => {
-                                        console.log('Webhook saveLog error => ' + errLog2);
-                                    });
-                            }
-                        })
-                        .catch((errorAPI) => {
-                            console.log('getParametersApi error => ' + JSON.stringify(errorAPI));
-                            statusCod = 500
-                            responseBody.error = 'Retry later'
-                            res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                            res.write(JSON.stringify(responseBody));
-                            res.end();
+                                })
                             return
-                        })
-                }).catch(errPartner => {
-                    console.log('connection to admin db failed: ' + JSON.stringify(errPartner));
-                    statusCod = 500
-                    responseBody.error = 'Retry later'
-                    res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                    res.write(JSON.stringify(responseBody));
-                    res.end();
-                    return
-                })
+                        } else {
+                            //Webservice response
+                            statusCod = 401
+                            responseBody.error = 'Webhook unidentified source'
+                            dbLogError = 'Webhook unidentified source'
+                        }
+
+                    } else {
+                        statusCod = 500
+                        responseBody.error = 'Retry later'
+                    }
+                } else {
+                    statusCod = 401
+                    responseBody.error = 'Webhook unidentified source'
+                    dbLogError = 'Webhook unidentified source'
+                }
             } else {
-                statusCod = 401
-                responseBody.error = 'Webhook unidentified source'
-                dbLogError = 'Webhook unidentified source'
-                res.writeHead(statusCod, { 'Content-Type': 'application/json' })
-                res.write(JSON.stringify(responseBody));
-                res.end();
-                return
+                // Webservice response
+                statusCod = 500
+                responseBody.error = 'Some informations in payload of webhook are unavailable'
+                dbLogError = 'Some informations in payload of webhook are unavailable'
             }
-
-
-
+            res.writeHead(statusCod, { 'Content-Type': 'application/json' })
+            res.write(JSON.stringify(responseBody));
+            res.end();
+            return
         });
     } else {
         // Webservice response
@@ -145,4 +128,11 @@ const server = http.createServer((req, res) => {
 const PORT = process.env.PORT;
 server.listen(PORT, () => {
     //console.log(`Server listening on port ${PORT}`);
+    getDbParamsPartner().then(async resDBInfos => {
+        //console.log('in ', resDBInfos);
+        let loadAdmin = await loadAdminInfos(resDBInfos)
+        //console.log("🚀 ~ server.listen ~ loadAdmin:", loadAdmin)
+    }).catch(err => {
+        //console.log('connection to admin db failed: db params aren\'t good or ' + JSON.stringify(err));
+    })
 });
