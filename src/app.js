@@ -125,9 +125,9 @@ const server = http.createServer((req, res) => {
 });
 
 // Set the server to listen on a port
-const PORT = process.env.PORT;
+const PORT = process.env.NODE_SERVER_PORT;
 server.listen(PORT, () => {
-    //console.log(`Server listening on port ${PORT}`);
+    //console.log(`Server listening on port ${NODE_SERVER_PORT}`);
     getDbParamsPartner().then(async resDBInfos => {
         //console.log('in ', resDBInfos);
         let loadAdmin = await loadAdminInfos(resDBInfos)
