@@ -1,5 +1,5 @@
 {
-  "name": "import_data",
+  "name": "import_ratehawk_data",
   "version": "1.0.0",
   "description": "Import de données provenant de ratehawk",
   "main": "src/app.js",
@@ -8,7 +8,7 @@
     "start": "node src/app.js"
   },
   "keywords": [],
-  "author": "Deschanel Tchatchouang",
+  "author": "Neema",
   "license": "UNLICENSED",
   "devDependencies": {
     "nodemon": "^3.1.0"
